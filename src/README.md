@@ -19,6 +19,9 @@ The green-marked switch toggles emitting color. These are:
 - Purple
 - Yellow
 - Cyan
+- White (hold at least 3 seconds)
+
+Note: The white color consumes most current (~60mA per LED, R+G+B).
 
 ### Blue Switch
 

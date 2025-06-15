@@ -12,7 +12,8 @@ const BTN_RED = 2;
 const BTN_GREEN = 3;
 const BTN_BLUE = 4;
 
-const PREDEFINED_COLORS_COUNT = 6;
+const PREDEFINED_COLORS_COUNT = 6; // Except white
+
 const WHITE_COLOR = np.color(0xff, 0xff, 0xff);
 const NO_COLOR = np.color(0, 0, 0);
 
@@ -22,7 +23,9 @@ const PREDEFINED_COLORS = [
     np.color(0, 0, 0xff),       // Blue
     np.color(0xff, 0xff, 0),    // Yellow
     np.color(0xff, 0, 0xff),    // Magenta
-    np.color(0, 0xff, 0xff)     // Cyan
+    np.color(0, 0xff, 0xff),    // Cyan
+    // Out of cycle
+    WHITE_COLOR
 ];
 
 const MODE_CONSTANT = 0;
@@ -39,10 +42,18 @@ let updateTimer = null;
 (() => {
     setWatch(buttonClick, BTN_RED, RISING, 50);
     setWatch(buttonClick, BTN_GREEN, RISING, 50);
+    setWatch(buttonHold , BTN_GREEN, LOW_LEVEL, 3000);
     setWatch(buttonClick, BTN_BLUE, RISING, 50);
 
     requireUpdate();
 })();
+
+function
+setWhiteColor()
+{
+    colorIndex = PREDEFINED_COLORS_COUNT;
+    emittingColor = PREDEFINED_COLORS[colorIndex];
+}
 
 function
 nextColor()
@@ -72,6 +83,17 @@ buttonClick(pin)
         case BTN_BLUE:
             // Not used
             break;
+    }
+}
+
+function
+buttonHold(pin)
+{
+    if (pin === BTN_GREEN) {
+        if (mode === MODE_CONSTANT) {
+            setWhiteColor();
+            requireUpdate();
+        }
     }
 }
 
