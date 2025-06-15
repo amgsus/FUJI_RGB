@@ -1,21 +1,22 @@
 const { NeoPixel } = require('neopixel');
 
 const NUM_DOWN_TUBE_LEDS = 36;
-
-const PIN = 14; // GP14
-
 const LENGTH = NUM_DOWN_TUBE_LEDS;
 
-const np = new NeoPixel(PIN, LENGTH);
-
+const DAT_PIN = 14; // GP14
 const BTN_RED = 2;
 const BTN_GREEN = 3;
 const BTN_BLUE = 4;
 
-const PREDEFINED_COLORS_COUNT = 6; // Except white
+const PREDEFINED_COLORS_COUNT = 6;
 
-const WHITE_COLOR = np.color(0xff, 0xff, 0xff);
+const MODE_CONSTANT = 0;
+const MODE_HUE = 1;
+
+const HUE_UPDATE_INTERVAL = 36 * 3; // ms
+
 const NO_COLOR = np.color(0, 0, 0);
+const WHITE_COLOR = np.color(0xff, 0xff, 0xff);
 
 const PREDEFINED_COLORS = [
     np.color(0xff, 0, 0),       // Red
@@ -28,10 +29,7 @@ const PREDEFINED_COLORS = [
     WHITE_COLOR
 ];
 
-const MODE_CONSTANT = 0;
-const MODE_HUE = 1;
-
-const HUE_UPDATE_INTERVAL = 36 * 3; // ms
+const np = new NeoPixel(DAT_PIN, LENGTH);
 
 let colorIndex = 1; // Green
 let emittingColor = PREDEFINED_COLORS[0];
@@ -131,9 +129,9 @@ enableHueWheel()
 }
 
 function
-setPixels(color) // Sets only odd LEDs to reduce power consumption
+setPixels(color, evenFirst = false) // Sets either odd, or even LEDs (reducing power consumption)
 {
-    let skip = false;
+    let skip = evenFirst;
 
     for ( let i = 0; i < np.length; i++ ) {
         np.setPixel(i, skip ? NO_COLOR : color);
@@ -157,9 +155,8 @@ hueWheelUpdate()
     refreshPixels();
 }
 
-// // input: h as an angle in [0,360] and s,l in [0,1] - output: r,g,b in [0,1]
-// // https://stackoverflow.com/questions/2353211/hsl-to-rgb-color-conversion
-
+// input: h as an angle in [0,360] and s,l in [0,1] - output: r,g,b in [0,1]
+//      https://stackoverflow.com/questions/2353211/hsl-to-rgb-color-conversion
 function 
 hsl2rgb(h, s, l)
 {
